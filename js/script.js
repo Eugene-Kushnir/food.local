@@ -458,46 +458,70 @@ window.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        // Calc 
+        
+        const result = document.querySelector('.calculating__result span');
+        let sex = 'female', height, weight, age, ratio = 1.375;
 
-    // showSlide(slideIndex);
-    // if(slides.length < 10) {
-    //     total.textContent = `0${slides.length}`;
-    // } else {
-    //     total.textContent = slides.length;
-    // }
+        function calcTotal() {
+            if(!sex || !height || !weight || !age || !ratio){
+                result.textContent = '_____';
+                return;
+            }
 
-    // function showSlide(n) {
-    //     if(n > slides.length) {
-    //         slideIndex = 1;
-    //     }
+            if( sex == 'female') {
+                result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);
+            } else {
+                result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);
+            }
+        }
+        calcTotal();
 
-    //     if(n < 1) {
-    //         slideIndex = slides.length;
-    //     }
+        function getStaticInformation(parentSelector, activeClass) {
+            const elements = document.querySelectorAll(`${parentSelector} div`);
 
-    //     slides.forEach(item => item.style.display = 'none');
+            elements.forEach(elem => {
+                elem.addEventListener('click', (e) => {
+                    if(e.target.getAttribute('data-ratio')){
+                        ratio = +e.target.getAttribute('data-ratio');
+                    } else {
+                        sex = e.target.getAttribute('id');
+                    }
 
-    //     slides[slideIndex-1].style.display = 'block';
-    //     if(slides.length < 10) {
-    //         current.textContent = `0${slideIndex}`;
-    //     } else {
-    //         current.textContent = slideIndex;
-    //     }
+                    elements.forEach(elem => {
+                        elem.classList.remove(activeClass);
+                    });
 
-    // }
+                    e.target.classList.add(activeClass);
+                    calcTotal();
+                });
+            });
+        }
 
-    // function plusSlides(n) {
-    //     showSlide(slideIndex += n);
-    // }
+        getStaticInformation('#gender', 'calculating__choose-item_active');
+        getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active');
 
-    // pressPrev.addEventListener('click', () => {
-    //     plusSlides(-1);
-    // });
+        function getDynamicInformation(selector){
+            const input = document.querySelector(selector);
 
-    // pressNext.addEventListener('click', () => {
-    //     plusSlides(1);
-    // });
+            input.addEventListener('input', () => {
+                switch(input.getAttribute('id')) {
+                    case 'heigth':
+                        height = +input.value;
+                        break;
+                    case 'weight':
+                        weight = +input.value;
+                        break;
+                    case 'age':
+                        age = +input.value;
+                        break; 
+                }
+                calcTotal();
+            });
+        }
 
+        getDynamicInformation('#heigth');
+        getDynamicInformation('#weight');
+        getDynamicInformation('#age');
 
-    
 });
